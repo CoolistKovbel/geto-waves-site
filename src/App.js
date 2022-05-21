@@ -8,9 +8,9 @@ export default function App() {
   // Variable where we can store our account
   const [currentAccount, setCurrentAccount] = useState("");
   const [totalWaveCount, setTotalWaveCount] = useState('')
-  // const [isLoading, setIsLoading] = useState(true);
+  const [allWaves, setAllWaves] = useState([]);
 
-  const contractAddress = "0x0988DaE7E6C8708203a454AB80E2F1C232e796EF"
+  const contractAddress = "0xaF32a35348Bc57DeDee2e1419B90f65adbE939b5"
   const contractAbi = abi.abi;
 
 
@@ -64,6 +64,8 @@ export default function App() {
           console.log("Total count: ", count.toNumber())
           setTotalWaveCount(count.toNumber());
 
+          await getAllWaves()
+
         }else{
           console.log("No Authorized Account")
         }
@@ -80,6 +82,7 @@ export default function App() {
 
   useEffect( () => {
     checkIfWalletIsConnect();
+
   }, [])
 
   const wave = async () => {
@@ -97,7 +100,7 @@ export default function App() {
 
         let count = await wavePortalContract.getTotalWaves();
 
-        const waveTx = await wavePortalContract.wave();
+        const waveTx = await wavePortalContract.wave("Hello hard coded");
         console.log("mining trx: ", waveTx.hash)
 
         await waveTx.wait()
@@ -113,6 +116,49 @@ export default function App() {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const getAllWaves = async () => {
+
+    try {
+
+      const {ethereum} = window
+
+      if(ethereum) {
+        // Get Provider
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner()
+        const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer )
+
+        // Calls the web provider
+        const waves = await wavePortalContract.getAllWaves()
+
+        console.log(waves)
+
+        let wavesCleaned = []
+        waves.forEach(wave => {
+          wavesCleaned.push({
+            address: wave.waver,
+            timestamp: new Date(wave.timestamp * 1000),
+            message: wave.message
+          })
+        })
+
+
+        console.log(wavesCleaned)
+
+        // Data Stored in React
+        setAllWaves(wavesCleaned)
+
+      }else{
+        console.log("Ethereum no exist")
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
+
+
   }
 
   return (
@@ -147,6 +193,15 @@ export default function App() {
             </button>
           </div>
         )}
+
+        {allWaves.map((wave, index) => {
+          return (
+            <div key={index} className="wavesMessageData" >
+              <div>Address: {wave.address}</div>
+              <div>Time: {wave.timestamp.toString()}</div>
+              <div>Message: {wave.message}</div>
+            </div>)
+        })}
 
       </div>
 

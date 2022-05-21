@@ -39,4 +39,12 @@
 .status {
   color: aliceblue;
   padding: 10px;
+  text-align: center;
+}
+
+.wavesMessageData {
+  padding: 10px;
+  background-color: black;
+  color: greenyellow;
+  font-family: monospace;
 }
