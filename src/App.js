@@ -1,28 +1,153 @@
-import * as React from "react";
+import React, {useEffect, useState} from "react";
 import { ethers } from "ethers";
 import './App.css';
+import abi from "./utils/wave.json"
 
 export default function App() {
 
-  const wave = () => {
+  // Variable where we can store our account
+  const [currentAccount, setCurrentAccount] = useState("");
+  const [totalWaveCount, setTotalWaveCount] = useState('')
+  // const [isLoading, setIsLoading] = useState(true);
 
+  const contractAddress = "0x0988DaE7E6C8708203a454AB80E2F1C232e796EF"
+  const contractAbi = abi.abi;
+
+
+  // Check if wallet is connected
+  const checkIfWalletIsConnect = async () => {
+
+   try {
+
+    const { ethereum } = window
+
+    if(!ethereum) {
+      console.log('Make Sure you have metamask');
+      return;
+    }else{
+      console.log("We have ethereum Object", ethereum);
+    }
+
+
+   } catch(err) {
+    console.log(err)
+   }
+
+  }
+
+  /**
+  * Implement your connectWallet method here
+  */
+  const connectWallet = async () => {
+
+    try {
+
+      const {ethereum} = window
+
+      if(!ethereum) {
+        alert("Make sure you have metamask or ethereum client")
+      } else{
+        const accounts = await ethereum.request({method: "eth_accounts"});
+
+        if(accounts.length !== 0){
+
+          const account = accounts[0];
+          console.log("There is an authorized account:", account);
+          setCurrentAccount(account)
+
+          const provider = new ethers.providers.Web3Provider(ethereum)
+          const signer = provider.getSigner();
+
+          const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+
+          let count = await wavePortalContract.getTotalWaves();
+          console.log("Total count: ", count.toNumber())
+          setTotalWaveCount(count.toNumber());
+
+        }else{
+          console.log("No Authorized Account")
+        }
+
+      }
+
+      console.log('connected')
+    }catch(err) {
+      console.log(err)
+    }
+
+  }
+
+
+  useEffect( () => {
+    checkIfWalletIsConnect();
+  }, [])
+
+  const wave = async () => {
+    try {
+      const {ethereum} = window
+
+      if(!ethereum) {
+        console.log("You need metamask")
+      }else{
+
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner();
+
+        const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+
+        let count = await wavePortalContract.getTotalWaves();
+
+        const waveTx = await wavePortalContract.wave();
+        console.log("mining trx: ", waveTx.hash)
+
+        await waveTx.wait()
+        console.log("Mined -- ", waveTx.hash)
+
+        count = await wavePortalContract.getTotalWaves()
+        console.log("Total count: ", count.toNumber())
+        setTotalWaveCount(count.toNumber());
+
+      }
+
+      console.log("waved")
+    } catch (err) {
+      console.log(err)
+    }
   }
 
   return (
     <div className="mainContainer">
 
       <div className="dataContainer">
+
         <div className="header">
         👋 Hey whats up hello
         </div>
 
         <div className="bio">
-        I am lyub, just trying to get through life. teach me help me be my friend.
+        I am lyub, just trying to get through life. teach me, help me, be my friend.
         </div>
 
-        <button className="waveButton" onClick={wave}>
-          Wave at Me
-        </button>
+        {!currentAccount && (
+          <button className="waveButton" onClick={connectWallet}>
+            Connect
+          </button>
+        )}
+
+        {/* Loading section */}
+
+        {currentAccount && (
+          <div className="status">
+            <h2>Amount of Waves</h2>
+            <p>
+              {totalWaveCount}
+            </p>
+            <button className="waveButton" onClick={wave}>
+              Wave at Me
+            </button>
+          </div>
+        )}
+
       </div>
 
     </div>
