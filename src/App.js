@@ -9,8 +9,9 @@ export default function App() {
   const [currentAccount, setCurrentAccount] = useState("");
   const [totalWaveCount, setTotalWaveCount] = useState('')
   const [allWaves, setAllWaves] = useState([]);
+  const [singleUserWaves, setSingleUserWaves] = useState(0)
 
-  const contractAddress = "0xaF32a35348Bc57DeDee2e1419B90f65adbE939b5"
+  const contractAddress = "0x22A45558582cd3d7a27fD7a2c05E6DC48E164FeB"
   const contractAbi = abi.abi;
 
 
@@ -65,6 +66,7 @@ export default function App() {
           setTotalWaveCount(count.toNumber());
 
           await getAllWaves()
+          await getAllWaveResultFromSingleUser(account)
 
         }else{
           console.log("No Authorized Account")
@@ -82,8 +84,8 @@ export default function App() {
 
   useEffect( () => {
     checkIfWalletIsConnect();
-
   }, [])
+
 
   const wave = async () => {
     try {
@@ -100,7 +102,7 @@ export default function App() {
 
         let count = await wavePortalContract.getTotalWaves();
 
-        const waveTx = await wavePortalContract.wave("Hello hard coded");
+        const waveTx = await wavePortalContract.wave('What is life', {gasLimit: 300000});
         console.log("mining trx: ", waveTx.hash)
 
         await waveTx.wait()
@@ -109,6 +111,8 @@ export default function App() {
         count = await wavePortalContract.getTotalWaves()
         console.log("Total count: ", count.toNumber())
         setTotalWaveCount(count.toNumber());
+
+        await getAllWaves()
 
       }
 
@@ -144,9 +148,6 @@ export default function App() {
           })
         })
 
-
-        console.log(wavesCleaned)
-
         // Data Stored in React
         setAllWaves(wavesCleaned)
 
@@ -159,6 +160,32 @@ export default function App() {
     }
 
 
+  }
+
+  const getAllWaveResultFromSingleUser = async (_account) => {
+    try {
+
+      const {ethereum} = window
+
+      if(ethereum){
+        const provider = new ethers.providers.Web3Provider(ethereum)
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+
+        // Call the wave amount giving the address of the signer
+        const amountOfWaves = await wavePortalContract.userStatus(_account)
+
+        console.log(wavePortalContract)
+
+        setSingleUserWaves(amountOfWaves.toNumber())
+
+      }else{
+        alert("You need metamask")
+      }
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
@@ -185,8 +212,12 @@ export default function App() {
         {currentAccount && (
           <div className="status">
             <h2>Amount of Waves</h2>
+            <h3>Account: {currentAccount}</h3>
             <p>
               {totalWaveCount}
+            </p>
+            <p>
+              {singleUserWaves}
             </p>
             <button className="waveButton" onClick={wave}>
               Wave at Me
