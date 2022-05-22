@@ -197,10 +197,10 @@ export default function App() {
 
         <Header />
 
-        <Bio />
+        <Bio isAccount={currentAccount} waveButton={wave} />
 
         {!currentAccount && (
-          <button className="waveButton" onClick={connectWallet}>
+          <button className="connectButton" onClick={connectWallet}>
             Connect
           </button>
         )}
@@ -217,9 +217,6 @@ export default function App() {
             <p>
               {singleUserWaves}
             </p>
-            <button className="waveButton" onClick={wave}>
-              Wave at Me
-            </button>
           </div>
         )}
 

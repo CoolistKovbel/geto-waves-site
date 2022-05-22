@@ -3,6 +3,21 @@
   padding: 0;
   box-sizing: border-box;
 }
+/* Classes */
+.yes {
+  display: block;
+}
+.no {
+  display: none;
+}
+.connectButton {
+  padding: 10px;
+  font-size: 1.2rem;
+  color: chartreuse;
+  background-color: darkslategray;
+  border: none;
+  width: 100%;
+}
 
 .mainContainer {
   width: 100%;
@@ -77,3 +92,18 @@
   color: aliceblue;
   font-weight: bold;
 }
+
+.bio button {
+  margin-top: 20px;
+  width: 100%;
+  font-size: 1.2rem;
+  font-family: monospace;
+  font-weight: bold;
+  color: green;
+  background-color: black;
+  border: none;
+  padding: 10px;
+  text-align: center;
+}
+
+

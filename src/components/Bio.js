@@ -1,6 +1,7 @@
 import React from 'react'
 
-function Bio() {
+function Bio({isAccount, waveButton}) {
+
   return (
     <div className='bio'>
 
@@ -10,7 +11,7 @@ function Bio() {
 
       <div className='bio-content'>
         <p>
-          Hey I am lyub. Just a dude trying to do some cool things I guess. Learning to be someone cool so I hope my girlfriend can relax and I can code more and more and who knows make something cool and out perform elon musk.
+          Hey I am lyub. Just a dude trying to do some cool things I guess. Learning to be someone cool so I hope my girlfriend can relax and I can code more and more and who knows make something cool, get my friends back, get my life back, make at least 50k and out perform elon musk.
         </p>
         <p>
           Soon To create more projects so... stay tuned..
@@ -22,7 +23,9 @@ function Bio() {
           <li>Crypto Currency</li>
         </ul>
 
-
+        <button className={isAccount ? "yes" : "no"} onClick={waveButton}>
+          Wave at Me
+        </button>
 
       </div>
 
