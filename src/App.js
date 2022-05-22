@@ -4,6 +4,7 @@ import './App.css';
 import abi from "./utils/wave.json"
 import Header from "./components/Header";
 import Bio from "./components/Bio";
+import Status from "./components/Status";
 
 export default function App() {
 
@@ -12,6 +13,7 @@ export default function App() {
   const [totalWaveCount, setTotalWaveCount] = useState('')
   const [allWaves, setAllWaves] = useState([]);
   const [singleUserWaves, setSingleUserWaves] = useState(0)
+  const [personalMessage, setPersonalMessage] = useState('What is Life')
 
   const contractAddress = "0x22A45558582cd3d7a27fD7a2c05E6DC48E164FeB"
   const contractAbi = abi.abi;
@@ -104,7 +106,7 @@ export default function App() {
 
         let count = await wavePortalContract.getTotalWaves();
 
-        const waveTx = await wavePortalContract.wave('What is life', {gasLimit: 300000});
+        const waveTx = await wavePortalContract.wave(personalMessage, {gasLimit: 300000});
         console.log("mining trx: ", waveTx.hash)
 
         await waveTx.wait()
@@ -197,7 +199,12 @@ export default function App() {
 
         <Header />
 
-        <Bio isAccount={currentAccount} waveButton={wave} />
+        <Bio
+          isAccount={currentAccount}
+          waveButton={wave}
+          setDeMessage={setPersonalMessage}
+          deMessage={personalMessage}
+          />
 
         {!currentAccount && (
           <button className="connectButton" onClick={connectWallet}>
@@ -208,26 +215,13 @@ export default function App() {
         {/* Loading section */}
 
         {currentAccount && (
-          <div className="status">
-            <h2>Amount of Waves</h2>
-            <h3>Account: {currentAccount}</h3>
-            <p>
-              {totalWaveCount}
-            </p>
-            <p>
-              {singleUserWaves}
-            </p>
-          </div>
+          <Status
+            isAccount={currentAccount}
+            waveCount={totalWaveCount}
+            singleWaveCount={singleUserWaves}
+            deWaves={allWaves}
+            />
         )}
-
-        {allWaves.map((wave, index) => {
-          return (
-            <div key={index} className="wavesMessageData" >
-              <div>Address: {wave.address}</div>
-              <div>Time: {wave.timestamp.toString()}</div>
-              <div>Message: {wave.message}</div>
-            </div>)
-        })}
 
       </div>
 

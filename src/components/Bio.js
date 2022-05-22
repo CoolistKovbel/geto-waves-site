@@ -1,6 +1,11 @@
 import React from 'react'
 
-function Bio({isAccount, waveButton}) {
+function Bio({isAccount, waveButton, deMessage, setDeMessage}) {
+
+  const handleChange = e => {
+    const {value} = e.target
+    setDeMessage(value)
+  }
 
   return (
     <div className='bio'>
@@ -26,6 +31,14 @@ function Bio({isAccount, waveButton}) {
         <button className={isAccount ? "yes" : "no"} onClick={waveButton}>
           Wave at Me
         </button>
+
+        <input
+          className={isAccount ? "yes" : "no"}
+          type="text"
+          onChange={handleChange}
+          name="message"
+          value={deMessage}
+          />
 
       </div>
 
