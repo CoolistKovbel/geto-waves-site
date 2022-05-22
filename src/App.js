@@ -2,6 +2,8 @@ import React, {useEffect, useState} from "react";
 import { ethers } from "ethers";
 import './App.css';
 import abi from "./utils/wave.json"
+import Header from "./components/Header";
+import Bio from "./components/Bio";
 
 export default function App() {
 
@@ -193,13 +195,9 @@ export default function App() {
 
       <div className="dataContainer">
 
-        <div className="header">
-        👋 Hey whats up hello
-        </div>
+        <Header />
 
-        <div className="bio">
-        I am lyub, just trying to get through life. teach me, help me, be my friend.
-        </div>
+        <Bio />
 
         {!currentAccount && (
           <button className="waveButton" onClick={connectWallet}>
