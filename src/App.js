@@ -49,13 +49,11 @@ export default function App() {
 
     try {
 
-      const {ethereum} = window
-
       if(!ethereum) {
         alert("Make sure you have metamask or ethereum client")
       } else{
         const accounts = await ethereum.request({method: "eth_accounts"});
-
+        console.log(accounts)
         if(accounts.length !== 0){
 
           const account = accounts[0];
