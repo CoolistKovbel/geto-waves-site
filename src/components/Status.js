@@ -12,18 +12,19 @@ function Status({isAccount, waveCount ,singleWaveCount, deWaves }) {
           Total Waves From You: {singleWaveCount}
         </p>
       </header>
-
-      {
-        deWaves.map((wave, index) => {
-          return (
-            <div key={index} className="wavesMessageData">
-              <h2>Address: {wave.address}</h2>
-              <h2>Time: {wave.timestamp.toString()}</h2>
-              <p>Message: {wave.message}</p>
-            </div>
-          )
-        })
-      }
+      <div className='messages'>
+        {
+          deWaves.map((wave, index) => {
+            return (
+              <div key={index} className="wavesMessageData">
+                <h2>Address: {wave.address}</h2>
+                <h3>Time: {wave.timestamp.toString()}</h3>
+                <p>Message: {wave.message}</p>
+              </div>
+            )
+          })
+        }
+      </div>
 
     </div>
   )

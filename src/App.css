@@ -10,6 +10,9 @@
 .no {
   display: none;
 }
+button {
+  cursor: pointer;
+}
 .connectButton {
   padding: 10px;
   font-size: 1.2rem;
@@ -118,8 +121,17 @@
   font-family: monospace;
 }
 
+.status header p {
+  font-size: 16px;
+}
+
+.status .messages{
+  display: flex;
+  flex-direction: column-reverse;
+  padding: 20px;
+}
+
 .status h3 {
-  font-size: 1.8rem;
   font-weight: bold;
 }
 

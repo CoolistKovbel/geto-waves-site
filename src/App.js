@@ -18,6 +18,8 @@ export default function App() {
   const contractAddress = "0x22A45558582cd3d7a27fD7a2c05E6DC48E164FeB"
   const contractAbi = abi.abi;
 
+  const {ethereum} = window
+
 
   // Check if wallet is connected
   const checkIfWalletIsConnect = async () => {
@@ -90,19 +92,27 @@ export default function App() {
     checkIfWalletIsConnect();
   }, [])
 
+// Gets the provider and the signers
+  const getEthereum = () => {
+
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const signer = provider.getSigner();
+    const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+
+    return wavePortalContract
+
+  }
+
 
   const wave = async () => {
     try {
-      const {ethereum} = window
+
 
       if(!ethereum) {
         console.log("You need metamask")
       }else{
 
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner();
-
-        const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+        const wavePortalContract = getEthereum()
 
         let count = await wavePortalContract.getTotalWaves();
 
@@ -130,18 +140,11 @@ export default function App() {
 
     try {
 
-      const {ethereum} = window
-
       if(ethereum) {
-        // Get Provider
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner()
-        const wavePortalContract = new ethers.Contract(contractAddress, contractAbi, signer )
+        const wavePortalContract = getEthereum()
 
         // Calls the web provider
         const waves = await wavePortalContract.getAllWaves()
-
-        console.log(waves)
 
         let wavesCleaned = []
         waves.forEach(wave => {
@@ -169,12 +172,9 @@ export default function App() {
   const getAllWaveResultFromSingleUser = async (_account) => {
     try {
 
-      const {ethereum} = window
-
       if(ethereum){
-        const provider = new ethers.providers.Web3Provider(ethereum)
-        const signer = provider.getSigner();
-        const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+
+        const wavePortalContract = getEthereum()
 
         // Call the wave amount giving the address of the signer
         const amountOfWaves = await wavePortalContract.userStatus(_account)
