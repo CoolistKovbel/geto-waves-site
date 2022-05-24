@@ -115,7 +115,7 @@ export default function App() {
 
   const wave = async () => {
     try {
-
+      const {ethereum} = window
       if(!ethereum) {
         console.log("You need metamask")
       }else{
@@ -151,7 +151,7 @@ export default function App() {
   const getAllWaves = async () => {
 
     try {
-
+      const {ethereum} = window
       if(ethereum) {
         const wavePortalContract = getEthereum()
 
@@ -183,7 +183,7 @@ export default function App() {
 
   const getAllWaveResultFromSingleUser = async (_account) => {
     try {
-
+      const {ethereum} = window
       if(ethereum){
 
         const wavePortalContract = getEthereum()
