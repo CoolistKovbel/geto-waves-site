@@ -19,13 +19,14 @@ export default function App() {
   const contractAddress = "0x22A45558582cd3d7a27fD7a2c05E6DC48E164FeB"
   const contractAbi = abi.abi;
 
-  const {ethereum} = window
+
 
 
   // Check if wallet is connected
   const checkIfWalletIsConnect = async () => {
 
    try {
+    const {ethereum} = window
 
     if(!ethereum) {
       console.log('Make Sure you have metamask');
@@ -56,7 +57,7 @@ export default function App() {
 
   // Gets the provider and the signers
   const getEthereum = () => {
-
+    const {ethereum} = window
     const provider = new ethers.providers.Web3Provider(ethereum)
     const signer = provider.getSigner();
     const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
@@ -71,13 +72,13 @@ export default function App() {
   const connectWallet = async () => {
 
     try {
-
+      const {ethereum} = window
       if(!ethereum) {
         alert("Make sure you have metamask or ethereum client")
         return;
       }
 
-      const accounts = await window.ethereum.request({method: "eth_accounts"});
+      const accounts = await ethereum.request({method: "eth_accounts"});
       console.log(accounts)
 
       if(accounts.length !== 0){

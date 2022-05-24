@@ -11,7 +11,9 @@ function Bio({isAccount, waveButton, deMessage, handleChange}) {
     <div className='bio'>
 
       <div className='img-container'>
-        <img src="https://i.pinimg.com/originals/69/f6/01/69f6010377ca4057293071ceea834c88.jpg" alt="random picture" />
+        <img
+        src="https://i.pinimg.com/originals/69/f6/01/69f6010377ca4057293071ceea834c88.jpg"
+        alt="random profile" />
       </div>
 
       <div className='bio-content'>
