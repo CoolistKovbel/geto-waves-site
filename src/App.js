@@ -61,30 +61,31 @@ export default function App() {
 
       if(!ethereum) {
         alert("Make sure you have metamask or ethereum client")
-      } else{
-        const accounts = await window.ethereum.request({method: "eth_accounts"});
-        console.log(accounts)
-
-        if(accounts.length !== 0){
-
-          const account = accounts[0];
-          console.log("There is an authorized account:", account);
-          setCurrentAccount(account)
-
-          const wavePortalContract = getEthereum();
-
-          let count = await wavePortalContract.getTotalWaves();
-          console.log("Total count: ", count.toNumber())
-          setTotalWaveCount(count.toNumber());
-
-          await getAllWaves()
-          await getAllWaveResultFromSingleUser(account)
-
-        }else{
-          console.log("No Authorized Account")
-        }
-
+        return;
       }
+
+      const accounts = await window.ethereum.request({method: "eth_accounts"});
+      console.log(accounts)
+
+      if(accounts.length !== 0){
+
+        const account = accounts[0];
+        console.log("There is an authorized account:", account);
+        setCurrentAccount(account)
+
+        const wavePortalContract = getEthereum();
+
+        let count = await wavePortalContract.getTotalWaves();
+        console.log("Total count: ", count.toNumber())
+        setTotalWaveCount(count.toNumber());
+
+        await getAllWaves()
+        await getAllWaveResultFromSingleUser(account)
+
+      }else{
+        console.log("No Authorized Account")
+      }
+
 
     }catch(err) {
       console.log(err)
