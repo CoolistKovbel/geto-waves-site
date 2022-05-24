@@ -1,10 +1,10 @@
 import React from 'react'
 
-function Bio({isAccount, waveButton, deMessage, setDeMessage}) {
+function Bio({isAccount, waveButton, deMessage, handleChange}) {
 
-  const handleChange = e => {
+  const handChange = e => {
     const {value} = e.target
-    setDeMessage(value)
+    handleChange(value)
   }
 
   return (
@@ -35,7 +35,7 @@ function Bio({isAccount, waveButton, deMessage, setDeMessage}) {
         <input
           className={isAccount ? "yes" : "no"}
           type="text"
-          onChange={handleChange}
+          onChange={handChange}
           name="message"
           value={deMessage}
           />

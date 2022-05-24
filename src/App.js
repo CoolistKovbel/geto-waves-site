@@ -14,6 +14,7 @@ export default function App() {
   const [allWaves, setAllWaves] = useState([]);
   const [singleUserWaves, setSingleUserWaves] = useState(0)
   const [personalMessage, setPersonalMessage] = useState('What is Life')
+  const [miningTimer, setMiningTimer] = useState('')
 
   const contractAddress = "0x22A45558582cd3d7a27fD7a2c05E6DC48E164FeB"
   const contractAbi = abi.abi;
@@ -22,11 +23,9 @@ export default function App() {
 
 
   // Check if wallet is connected
-  const checkIfWalletIsConnect = async () => {
+  const checkIfWalletIsConnect = () => {
 
    try {
-
-    const { ethereum } = window
 
     if(!ethereum) {
       console.log('Make Sure you have metamask');
@@ -42,6 +41,17 @@ export default function App() {
 
   }
 
+  // Gets the provider and the signers
+  const getEthereum = () => {
+
+    const provider = new ethers.providers.Web3Provider(ethereum)
+    const signer = provider.getSigner();
+    const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+
+    return wavePortalContract
+
+  }
+
   /**
   * Implement your connectWallet method here
   */
@@ -52,18 +62,16 @@ export default function App() {
       if(!ethereum) {
         alert("Make sure you have metamask or ethereum client")
       } else{
-        const accounts = await ethereum.request({method: "eth_accounts"});
+        const accounts = await window.ethereum.request({method: "eth_accounts"});
         console.log(accounts)
+
         if(accounts.length !== 0){
 
           const account = accounts[0];
           console.log("There is an authorized account:", account);
           setCurrentAccount(account)
 
-          const provider = new ethers.providers.Web3Provider(ethereum)
-          const signer = provider.getSigner();
-
-          const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
+          const wavePortalContract = getEthereum();
 
           let count = await wavePortalContract.getTotalWaves();
           console.log("Total count: ", count.toNumber())
@@ -78,7 +86,6 @@ export default function App() {
 
       }
 
-      console.log('connected')
     }catch(err) {
       console.log(err)
     }
@@ -90,21 +97,9 @@ export default function App() {
     checkIfWalletIsConnect();
   }, [])
 
-// Gets the provider and the signers
-  const getEthereum = () => {
-
-    const provider = new ethers.providers.Web3Provider(ethereum)
-    const signer = provider.getSigner();
-    const wavePortalContract = new ethers.Contract(contractAddress,contractAbi,signer);
-
-    return wavePortalContract
-
-  }
-
 
   const wave = async () => {
     try {
-
 
       if(!ethereum) {
         console.log("You need metamask")
@@ -116,15 +111,19 @@ export default function App() {
 
         const waveTx = await wavePortalContract.wave(personalMessage, {gasLimit: 300000});
         console.log("mining trx: ", waveTx.hash)
+        setMiningTimer('In Pr0gress')
 
         await waveTx.wait()
         console.log("Mined -- ", waveTx.hash)
+        setMiningTimer('Completed')
 
         count = await wavePortalContract.getTotalWaves()
         console.log("Total count: ", count.toNumber())
         setTotalWaveCount(count.toNumber());
 
         await getAllWaves()
+
+        setPersonalMessage('Blank')
 
       }
 
@@ -190,18 +189,23 @@ export default function App() {
     }
   }
 
+  const handleChange = (x) => {
+    console.log(x)
+    setPersonalMessage(x)
+  }
+
   return (
     <div className="mainContainer">
 
       <div className="dataContainer">
-
+        <h1>Mining: {miningTimer}</h1>
         <Header />
 
         <Bio
           isAccount={currentAccount}
           waveButton={wave}
-          setDeMessage={setPersonalMessage}
           deMessage={personalMessage}
+          handleChange={handleChange}
           />
 
         {!currentAccount && (
