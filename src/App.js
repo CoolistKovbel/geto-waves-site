@@ -29,7 +29,7 @@ export default function App () {
         setValidAccount(true)
         setCurrentAccount(account)
       } else {
-        console.log("no authoized account")
+        console.log("no authorized account")
       }
     } catch (err) {
       console.log(err)
